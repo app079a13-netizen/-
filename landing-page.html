@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <script src="assets/js/snap-pixel.js"></script>
+    <script src="assets/js/tiktok-pixel.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>فزعة | عرض محدود</title>
+    <meta name="description" content="عرض فزعة لفترة محدودة. احجز الآن واستفد قبل انتهاء الوقت." />
+    <meta property="og:title" content="فزعة | عرض محدود" />
+    <meta property="og:description" content="عرض خاص لفترة محدودة. سارع بالاستفادة الآن." />
+    <meta property="og:image" content="landing.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ar_AR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="فزعة | عرض محدود" />
+    <meta name="twitter:description" content="عرض خاص لفترة محدودة. سارع بالاستفادة الآن." />
+    <meta name="twitter:image" content="landing.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/landing-page.css" /></head>
+  <body>
+    <main class="lp" id="top">
+      <section class="lp__hero reveal" aria-labelledby="hero-title">
+        <div class="lp__cards" aria-hidden="true">
+          <img class="lp__card lp__card--platinum" src="assets/images/products/platinum.png" alt="" />
+          <img class="lp__card lp__card--gold" src="assets/images/products/gold.png" alt="" />
+        </div>
+        <div class="lp__hero-content">
+          <p class="lp__eyebrow">عروض فزعه</p>
+          <h1 id="hero-title">لفترة محدودة فقط<br /><span class="lp__headline-sub">بطاقات البلاتينيوم والذهبية مجانا</span></h1>
+        </div>
+      </section>
+
+      <section class="lp__urgency reveal" aria-label="العد التنازلي">
+        <h2>ينتهي العرض خلال</h2>
+        <div class="countdown" id="countdown" role="timer" aria-live="polite">
+          <div class="countdown__unit countdown__unit--static"><span>00</span><small>ساعة</small></div>
+          <div class="countdown__unit countdown__unit--static"><span>00</span><small>دقيقة</small></div>
+          <div class="countdown__unit"><span id="minutes">30</span><small>دقيقة</small></div>
+          <div class="countdown__unit"><span id="seconds">00</span><small>ثانية</small></div>
+        </div>
+        <div class="countdown__line" aria-hidden="true"></div>
+        <p class="lp__expires" id="expiry-note">سارع قبل انتهاء المهلة.</p>
+        <a id="cta" class="lp__cta" href="#" target="_blank" rel="noopener noreferrer" aria-label="احصل على العرض الآن">احصل على العرض الآن</a>
+      </section>
+    </main>
+
+    <script src="assets/js/landing-page.js"></script>
+  </body>
+</html>

