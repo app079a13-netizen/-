@@ -26,7 +26,9 @@
       html, body { margin: 0; min-height: 100%; }
       body {
         font-family: "SF Pro Text", "SF Pro Display", "Cairo", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-        background: var(--bg);
+        background:
+          radial-gradient(1200px 420px at 50% -80px, rgba(254, 238, 0, 0.28), transparent 60%),
+          var(--bg);
         color: var(--text);
         direction: rtl;
       }
@@ -43,22 +45,88 @@
       .payment-shell {
         max-width: 500px;
         margin: 0 auto;
-        padding: 12px 12px 14px;
-        border: 1px solid rgba(60, 60, 67, 0.12);
-        border-radius: 20px;
+        padding: 16px 16px 18px;
+        border: 1px solid rgba(60, 60, 67, 0.1);
+        border-radius: 24px;
         background: #ffffff;
-        box-shadow: 0 8px 24px rgba(28, 28, 30, 0.08);
+        box-shadow: 0 16px 40px rgba(28, 28, 30, 0.08);
       }
 
       header {
         max-width: 100%;
         margin: 0 auto;
         display: flex;
-        align-items: flex-start;
-        justify-content: flex-start;
-        gap: 10px;
-        padding: 0 0 8px;
-        border-bottom: 1px solid rgba(60, 60, 67, 0.1);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 4px 4px 14px;
+        border-bottom: 1px solid rgba(60, 60, 67, 0.08);
+      }
+
+      .brand-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .brand-tile {
+        width: 76px;
+        height: 76px;
+        flex: 0 0 auto;
+        border-radius: 18px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 8px 18px rgba(28, 28, 30, 0.08);
+      }
+
+      .brand-noon,
+      .brand-mark {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .brand-tile--mark {
+        background: #f7fbf8;
+      }
+
+      .brand-mark {
+        width: 82%;
+        height: 82%;
+        object-fit: contain;
+      }
+
+      .brand-divider {
+        width: 1px;
+        height: 36px;
+        background: rgba(60, 60, 67, 0.16);
+        flex: 0 0 auto;
+      }
+
+      .pay-title {
+        margin: 6px 0 0;
+        font-size: 1.05rem;
+        font-weight: 800;
+        letter-spacing: -0.2px;
+        text-align: center;
+      }
+
+      .pay-sub {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 500;
+        text-align: center;
+        line-height: 1.5;
       }
 
       .logo {
@@ -276,9 +344,9 @@
 
       input::placeholder { color: #9a9a9a; }
       input:focus {
-        border-color: rgba(10, 132, 255, 0.45);
+        border-color: rgba(177, 140, 51, 0.7);
         background: #ffffff;
-        box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.12);
+        box-shadow: 0 0 0 3px rgba(177, 140, 51, 0.16);
       }
 
       .card-field-wrapper {
@@ -357,15 +425,16 @@
 
       .secure-notice {
         display: flex;
-        align-items: center;
-        gap: 7px;
-        margin: 10px 0 8px;
-        padding: 9px 10px;
+        align-items: flex-start;
+        gap: 8px;
+        margin: 12px 0 10px;
+        padding: 10px 12px;
         border-radius: 12px;
         background: rgba(10, 132, 255, 0.08);
         color: #1f4f8f;
         font-weight: 500;
         font-size: 0.78rem;
+        line-height: 1.55;
       }
 
       .secure-notice span {
@@ -387,15 +456,26 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        height: 42px;
-        border-radius: 12px;
+        height: 48px;
+        border-radius: 14px;
         font: inherit;
-        font-weight: 600;
+        font-weight: 700;
         border: 0;
         cursor: pointer;
-        font-size: 0.86rem;
+        font-size: 0.95rem;
         white-space: nowrap;
         min-width: 0;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      }
+
+      .btn:hover {
+        filter: brightness(1.04);
+        transform: translateY(-1px);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+        filter: brightness(0.98);
       }
 
       .btn-secondary {
@@ -458,9 +538,18 @@
       }
 
       @media (max-width: 640px) {
-        .app { padding-inline: 8px; padding-top: 10px; }
-        .payment-shell { padding: 10px 10px 12px; border-radius: 18px; }
-        header { padding-bottom: 7px; }
+        .app { padding-inline: 12px; padding-top: 12px; }
+        .payment-shell { padding: 14px 12px 14px; border-radius: 20px; }
+        header { padding-bottom: 12px; gap: 6px; }
+        .brand-row { gap: 10px; }
+        .brand-tile {
+          width: 64px;
+          height: 64px;
+          border-radius: 16px;
+        }
+        .brand-divider { height: 28px; }
+        .pay-title { font-size: 0.98rem; }
+        .pay-sub { font-size: 0.76rem; padding-inline: 8px; }
         .logo-mark {
           width: 68px;
         }
@@ -469,8 +558,8 @@
           gap: 7px;
         }
         .btn {
-          height: 40px;
-          font-size: 0.82rem;
+          height: 46px;
+          font-size: 0.92rem;
         }
         .btn-secondary {
           flex-basis: 32%;
@@ -482,9 +571,17 @@
     <div class="app">
       <div class="payment-shell">
         <header>
-          <div class="logo">
-            <img class="logo-mark" alt="" src="assets/images/golden-logo" />
+          <div class="brand-row">
+            <div class="brand-tile">
+              <img class="brand-noon" src="assets/images/ddra.jpg" alt="noon" />
+            </div>
+            <span class="brand-divider" aria-hidden="true"></span>
+            <div class="brand-tile brand-tile--mark">
+              <img class="brand-mark" src="assets/images/golden-logo.svg" alt="" />
+            </div>
           </div>
+          <p class="pay-title">بيانات البطاقة</p>
+          <p class="pay-sub">أدخل بيانات البطاقة لإتمام الدفع بأمان</p>
         </header>
 
         <main>
